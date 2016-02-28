@@ -175,38 +175,6 @@ class EEG_Processing_User {
     myAverage_acc = myAverage_acc/10;
 
 
-
-    //DM acc and eye blink moved here
-    if ( myAverage_acc >.25 && myAverage_acc< .4)
-    {
-      moveBack = false;
-      moveLeft =false;
-      moveFront = true;
-      moveRight = false;
-    } 
-     else if ( myAverage_acc > -0.1 && myAverage_acc<.1)
-    {
-      moveBack = true;
-      moveLeft =false;
-      moveFront = false;
-      moveRight = false;
-    }
-    else if ((myAverage_R >= (upperThreshold_R - lowerThreshold_R)*0.65)&& abs(myAverage_R-myAverage_L) > 10 )
-    {
-      moveRight = true;
-      moveLeft = false;
-      moveBack = false;
-      moveFront = false;
-    } else if ((myAverage_L >= (upperThreshold_L - lowerThreshold_L)*0.55) && abs(myAverage_R-myAverage_L) > 2 )
-    {
-      moveLeft = true;
-      moveRight = false;
-      moveBack = false;
-      moveFront = false;
-    }
-
-
-
     //scarlettsan
     //begin focus
     float FFT_freq_Hz, FFT_value_uV;
@@ -253,7 +221,7 @@ class EEG_Processing_User {
     // try writing to the serial port if exist
     try {
       println("Focus: ", isFocused, " up: ", moveFront, " down: ", moveBack, " left: ", moveLeft, " right: ", moveRight);
-      serial_output.write(int(isFocused) + 48);
+      serial_output.write(int(isFocused) + 48);  // to ascii
       serial_output.write(int(moveFront) + 48);
       serial_output.write(int(moveBack) + 48);
       serial_output.write(int(moveLeft) + 48);
@@ -311,33 +279,33 @@ class EEG_Processing_User {
 
     //println(" acceleration is - " + myAverage_acc );
 
-    //if ( myAverage_acc >.25 && myAverage_acc< .4)
-    //{
-    //  moveBack = false;
-    //  moveLeft =false;
-    //  moveFront = true;
-    //  moveRight = false;
-    //} 
-    // else if ( myAverage_acc > -0.1 && myAverage_acc<.1)
-    //{
-    //  moveBack = true;
-    //  moveLeft =false;
-    //  moveFront = false;
-    //  moveRight = false;
-    //}
-    //else if ((myAverage_R >= (upperThreshold_R - lowerThreshold_R)*0.65)&& abs(myAverage_R-myAverage_L) > 10 )
-    //{
-    //  moveRight = true;
-    //  moveLeft = false;
-    //  moveBack = false;
-    //  moveFront = false;
-    //} else if ((myAverage_L >= (upperThreshold_L - lowerThreshold_L)*0.55) && abs(myAverage_R-myAverage_L) > 2 )
-    //{
-    //  moveLeft = true;
-    //  moveRight = false;
-    //  moveBack = false;
-    //  moveFront = false;
-    //}
+    if ( myAverage_acc >.25 && myAverage_acc< .4)
+    {
+      moveBack = false;
+      moveLeft =false;
+      moveFront = true;
+      moveRight = false;
+    } 
+     else if ( myAverage_acc > -0.1 && myAverage_acc<.1)
+    {
+      moveBack = true;
+      moveLeft =false;
+      moveFront = false;
+      moveRight = false;
+    }
+    else if ((myAverage_R >= (upperThreshold_R - lowerThreshold_R)*0.65)&& abs(myAverage_R-myAverage_L) > 10 )
+    {
+      moveRight = true;
+      moveLeft = false;
+      moveBack = false;
+      moveFront = false;
+    } else if ((myAverage_L >= (upperThreshold_L - lowerThreshold_L)*0.55) && abs(myAverage_R-myAverage_L) > 2 )
+    {
+      moveLeft = true;
+      moveRight = false;
+      moveBack = false;
+      moveFront = false;
+    }
         
 
     //MAKE TGE MOVE
