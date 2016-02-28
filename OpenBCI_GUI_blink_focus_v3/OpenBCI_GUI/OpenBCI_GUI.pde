@@ -23,6 +23,10 @@ import java.awt.event.KeyEvent;
 Robot robot;
 
 boolean isFocused;
+boolean moveRight = false;
+boolean moveLeft = false;
+boolean moveFront = false;
+boolean moveBack = false;
 
 // end DM
 
