@@ -195,6 +195,14 @@ void parseKey(char val) {
       openBCI.configureAllChannelsToDefault();
       break;
       
+      //DM - function to reset the ball
+      case 'o':
+      reset();
+      break;
+      case 'O':
+      reset();
+      break;
+      
     // //change the state of the impedance measurements...activate the N-channels
     // case 'A':
     //   Ichan = 1; activate = true; code_P_N_Both = 1;  setChannelImpedanceState(Ichan-1,activate,code_P_N_Both);

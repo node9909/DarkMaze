@@ -9,11 +9,7 @@ class EEG_Processing_User {
   //add your own variables here
   boolean isTriggered = false;  //boolean to keep track of when the trigger condition is met
   //Right eye - channel 2
-  float upperThreshold_R = 25;  //default uV upper threshold value ... this will automatically change over time
-  float lowerThreshold_R = 0;  //default uV lower threshold value ... this will automatically change over time
-  //Left eye - channel 1
-  float upperThreshold_L = 25;  //default uV upper threshold value ... this will automatically change over time
-  float lowerThreshold_L = 0;  //default uV lower threshold value ... this will automatically change over time
+  
 
   int averagePeriod = 250;  //number of data packets to average over (250 = 1 sec)
   int thresholdPeriod = 1250;  //number of packets
@@ -21,20 +17,14 @@ class EEG_Processing_User {
   int ourChan_R = 2 - 1;  //channel being monitored ... "2 - 1" means channel 2 (with a 0 index)
   int ourChan_L = 1 - 1;  //channel being monitored ... "1 - 1" means channel 1 (with a 0 index)
   //Present values of the channels
-  float myAverage_R = 0.0;   //this will change over time ... used for calculations below
-  float myAverage_L = 0.0;   //this will change over time ... used for calculations below
-  //For front and back
-  float myAverage_F = 0.0;   //this will change over time ... used for calculations below
-  float myAverage_B = 0.0;   //this will change over time ... used for calculations below
+
 
   float myAverage_acc = 0.0;
 
   float acceptableLimitUV = 250;  //uV values above this limit are excluded, as a result of them almost certainly being noise...
   float acceptableLimitAux = 2000;
 
-  //distance to move
-  int x_move = 0;
-  int y_move = 0;
+
 
   //if writing to a serial port
   int output = 0; //value between 0-255 that is the relative position of the current uV average between the rolling lower and upper uV thresholds
@@ -248,38 +238,38 @@ class EEG_Processing_User {
     alpha_count = beta_count = 0;
     
     
-    //DM: simulate keystroke
-    if (isFocused == true)
-    {
-     robot.keyPress(KeyEvent.VK_SPACE);
-    } else {
-     robot.keyRelease(KeyEvent.VK_SPACE);
-    }
+    ////DM: simulate keystroke
+    //if (isFocused == true)
+    //{
+    // robot.keyPress(KeyEvent.VK_SPACE);
+    //} else {
+    // robot.keyRelease(KeyEvent.VK_SPACE);
+    //}
     
-    if (moveRight == true)
-    {
-     robot.keyPress(KeyEvent.VK_RIGHT);
-    } else {
-     robot.keyRelease(KeyEvent.VK_RIGHT);
-    }
+    //if (moveRight == true)
+    //{
+    // robot.keyPress(KeyEvent.VK_RIGHT);
+    //} else {
+    // robot.keyRelease(KeyEvent.VK_RIGHT);
+    //}
 
-    if (moveLeft == true) {
-     robot.keyPress(KeyEvent.VK_LEFT);
-    } else {
-     robot.keyRelease(KeyEvent.VK_LEFT);
-    }
+    //if (moveLeft == true) {
+    // robot.keyPress(KeyEvent.VK_LEFT);
+    //} else {
+    // robot.keyRelease(KeyEvent.VK_LEFT);
+    //}
     
-    if (moveFront == true) {
-     robot.keyPress(KeyEvent.VK_UP);
-    } else {
-     robot.keyRelease(KeyEvent.VK_UP);
-    }
+    //if (moveFront == true) {
+    // robot.keyPress(KeyEvent.VK_UP);
+    //} else {
+    // robot.keyRelease(KeyEvent.VK_UP);
+    //}
     
-    if (moveBack == true) {
-     robot.keyPress(KeyEvent.VK_DOWN);
-    } else {
-     robot.keyRelease(KeyEvent.VK_DOWN);
-    }
+    //if (moveBack == true) {
+    // robot.keyPress(KeyEvent.VK_DOWN);
+    //} else {
+    // robot.keyRelease(KeyEvent.VK_DOWN);
+    //}
     
     
     

@@ -28,6 +28,10 @@ boolean moveLeft = false;
 boolean moveFront = false;
 boolean moveBack = false;
 
+//distance to move
+int x_move = 0;
+int y_move = 0;
+
 // end DM
 
 
@@ -125,7 +129,7 @@ EEG_Processing eegProcessing;
 EEG_Processing_User eegProcessing_user;
 
 // Serial output
-String serial_output_portName = "/dev/cu.usbmodem1411";  //must edit this based on the name of the serial/COM port
+String serial_output_portName = "/dev/cu.usbmodem1451";  //must edit this based on the name of the serial/COM port
 Serial serial_output;
 int serial_output_baud = 9600; //baud rate from the Arduino
 
@@ -174,20 +178,34 @@ PFont f1;
 PFont f2;
 PFont f3;
 
+
+float upperThreshold_R = 25;  //default uV upper threshold value ... this will automatically change over time
+float lowerThreshold_R = 0;  //default uV lower threshold value ... this will automatically change over time
+//Left eye - channel 1
+float upperThreshold_L = 25;  //default uV upper threshold value ... this will automatically change over time
+float lowerThreshold_L = 0;  //default uV lower threshold value ... this will automatically change over time
+
+float myAverage_R = 0.0;   //this will change over time ... used for calculations below
+float myAverage_L = 0.0;   //this will change over time ... used for calculations below
+//For front and back
+float myAverage_F = 0.0;   //this will change over time ... used for calculations below
+float myAverage_B = 0.0;   //this will change over time ... used for calculations below
+
 //========================SETUP============================//
 //========================SETUP============================//
 //========================SETUP============================//
 void setup() {
-  
+
   //DM: Let's get a Robot
   try { 
     robot = new Robot();
-  } catch (AWTException e) {
+  } 
+  catch (AWTException e) {
     e.printStackTrace();
     exit();
   }
   //end DM
-  
+
   println("Welcome to the Processing-based OpenBCI GUI!"); //Welcome line.
   println("Last update: 2/16/2016"); //Welcome line.
   println("For more information about how to work with this code base, please visit: http://docs.openbci.com/tutorials/01-GettingStarted");
@@ -645,11 +663,11 @@ int getDataIfAvailable(int pointCounter) {
         //scale the data into engineering units ("microvolts") and save to the "little buffer"
         accBuff[Achan][pointCounter] = dataPacketBuff[lastReadDataPacketInd].auxValues[Achan] *openBCI.get_scale_fac_accel_G_per_count();
         for (int r=0; r < 3; r++) {
-      
-      //print(dataPacketBuff[lastReadDataPacketInd].auxValues[r]);
-      //print(",");
-    }
-    //println(" Testing ... ");
+
+          //print(dataPacketBuff[lastReadDataPacketInd].auxValues[r]);
+          //print(",");
+        }
+        //println(" Testing ... ");
       } 
       pointCounter++; //increment counter for "little buffer"
     }
@@ -685,9 +703,9 @@ int getDataIfAvailable(int pointCounter) {
           yLittleBuff_uV[Ichan][pointCounter] = dataPacketBuff[lastReadDataPacketInd].values[Ichan]* openBCI.get_scale_fac_uVolts_per_count();
         }
         for (int Achan=0; Achan < auxchan; Achan++) {   //loop over each cahnnel
-        //scale the data into engineering units ("microvolts") and save to the "little buffer"
-        accBuff[Achan][pointCounter] = dataPacketBuff[lastReadDataPacketInd].auxValues[Achan] ;
-      } 
+          //scale the data into engineering units ("microvolts") and save to the "little buffer"
+          accBuff[Achan][pointCounter] = dataPacketBuff[lastReadDataPacketInd].auxValues[Achan] ;
+        } 
         pointCounter++;
       } //close the loop over data points
       //if (eegDataSource==DATASOURCE_PLAYBACKFILE) println("OpenBCI_GUI: getDataIfAvailable: currentTableRowIndex = " + currentTableRowIndex);
@@ -792,7 +810,7 @@ void processNewData() {
   } //end the loop over channels.
 
   //apply additional processing for the time-domain montage plot (ie, filtering)
-  eegProcessing.process(yLittleBuff_uV, dataBuffY_uV, dataBuffY_filtY_uV, fftBuff,accBuff);
+  eegProcessing.process(yLittleBuff_uV, dataBuffY_uV, dataBuffY_filtY_uV, fftBuff, accBuff);
 
   //apply user processing
   // ...yLittleBuff_uV[Ichan] is the most recent raw data since the last call to this processing routine
@@ -1081,6 +1099,23 @@ void printRegisters() {
   // printingRegisters = true;
 }
 
+void reset()
+{
+  background(0);
+  moveLeft = false;
+  moveRight = false;
+  moveFront = false;
+  moveBack = false;
+  upperThreshold_R = 25;  //default uV upper threshold value ... this will automatically change over time
+  lowerThreshold_R = 0;  //default uV lower threshold value ... this will automatically change over time
+  //Left eye - channel 1
+  upperThreshold_L = 25;  //default uV upper threshold value ... this will automatically change over time
+  lowerThreshold_L = 0;
+  
+  x_move = 0;
+  y_move = 0;
+}
+
 void stopRunning() {
   // openBCI.changeState(0); //make sure it's no longer interpretting as binary
   verbosePrint("OpenBCI_GUI: stopRunning: stop running...");
@@ -1189,7 +1224,7 @@ int getPlaybackDataFromTable(Table datatable, int currentTableRowIndex, float sc
       //put into data structure
       curDataPacket.values[Ichan] = (int) (0.5f+ val_uV / scale_fac_uVolts_per_count); //convert to counts, the 0.5 is to ensure rounding
     }
-        //DM : Testing for accelerometer
+    //DM : Testing for accelerometer
     for (int Achan=0; Achan < 3; Achan++) {
       curDataPacket.auxValues[Achan] = (int)(row.getFloat(8+Achan)*1000);
       //print(curDataPacket.auxValues[Achan]);
