@@ -136,14 +136,14 @@ class EEG_Processing_User {
     if (output < 0) output = 0;
     if (output > 255) output = 255;
 
-    //attempt to write to serial_output. If this serial port does not exist, do nothing.
-    try {
-      //println("inMoov_output: | " + output + " |");
-      serial_output.write(output);
-    }
-    catch(RuntimeException e) {
-      if (isVerbose) println("serial not present");
-    }
+    ////attempt to write to serial_output. If this serial port does not exist, do nothing.
+    //try {
+    //  //println("inMoov_output: | " + output + " |");
+    //  serial_output.write(output);
+    //}
+    //catch(RuntimeException e) {
+    //  if (isVerbose) println("serial not present");
+    //}
 
     ////OR, you could loop over each EEG channel and do some sort of frequency-domain processing from the FFT data
     //float FFT_freq_Hz, FFT_value_uV;
@@ -173,6 +173,38 @@ class EEG_Processing_User {
     }
     //println(myAverage_acc);
     myAverage_acc = myAverage_acc/10;
+
+
+
+    //DM acc and eye blink moved here
+    if ( myAverage_acc >.25 && myAverage_acc< .4)
+    {
+      moveBack = false;
+      moveLeft =false;
+      moveFront = true;
+      moveRight = false;
+    } 
+     else if ( myAverage_acc > -0.1 && myAverage_acc<.1)
+    {
+      moveBack = true;
+      moveLeft =false;
+      moveFront = false;
+      moveRight = false;
+    }
+    else if ((myAverage_R >= (upperThreshold_R - lowerThreshold_R)*0.65)&& abs(myAverage_R-myAverage_L) > 10 )
+    {
+      moveRight = true;
+      moveLeft = false;
+      moveBack = false;
+      moveFront = false;
+    } else if ((myAverage_L >= (upperThreshold_L - lowerThreshold_L)*0.55) && abs(myAverage_R-myAverage_L) > 2 )
+    {
+      moveLeft = true;
+      moveRight = false;
+      moveBack = false;
+      moveFront = false;
+    }
+
 
 
     //scarlettsan
@@ -205,17 +237,71 @@ class EEG_Processing_User {
 
     if (alpha_avg > 0.7 && alpha_avg < 10 && beta_avg < 0.7) {  // from excel
       isFocused = true;
-      robot.keyPress(KeyEvent.VK_SPACE);
       //println("focused");
       
     } else {
       isFocused = false;
-      robot.keyRelease(KeyEvent.VK_SPACE);
       //println("unfocused");
     }
 
     alpha_avg = beta_avg = 0;
     alpha_count = beta_count = 0;
+    
+    
+    //DM: simulate keystroke
+    if (isFocused == true)
+    {
+     robot.keyPress(KeyEvent.VK_SPACE);
+    } else {
+     robot.keyRelease(KeyEvent.VK_SPACE);
+    }
+    
+    if (moveRight == true)
+    {
+     robot.keyPress(KeyEvent.VK_RIGHT);
+    } else {
+     robot.keyRelease(KeyEvent.VK_RIGHT);
+    }
+
+    if (moveLeft == true) {
+     robot.keyPress(KeyEvent.VK_LEFT);
+    } else {
+     robot.keyRelease(KeyEvent.VK_LEFT);
+    }
+    
+    if (moveFront == true) {
+     robot.keyPress(KeyEvent.VK_UP);
+    } else {
+     robot.keyRelease(KeyEvent.VK_UP);
+    }
+    
+    if (moveBack == true) {
+     robot.keyPress(KeyEvent.VK_DOWN);
+    } else {
+     robot.keyRelease(KeyEvent.VK_DOWN);
+    }
+    
+    
+    
+    // try writing to the serial port if exist
+    try {
+      println("Focus: ", isFocused, " up: ", moveFront, " down: ", moveBack, " left: ", moveLeft, " right: ", moveRight);
+      serial_output.write(int(isFocused) + 48);
+      serial_output.write(int(moveFront) + 48);
+      serial_output.write(int(moveBack) + 48);
+      serial_output.write(int(moveLeft) + 48);
+      serial_output.write(int(moveRight) + 48);
+      serial_output.write('\n');
+      //serial_output.write('1');
+      //serial_output.write('1');
+      //serial_output.write('1');
+      //serial_output.write('1');
+      //serial_output.write('1');
+      //serial_output.write('\n');
+    }
+    catch(RuntimeException e) {
+      if (isVerbose) println("serial not present");
+    }
 
     //end focus
   }
@@ -256,39 +342,35 @@ class EEG_Processing_User {
 
     int x=x_move;//0;
 
-    boolean moveRight = false;
-    boolean moveLeft = false;
-    boolean moveFront = false;
-    boolean moveBack = false;
     //println(" acceleration is - " + myAverage_acc );
 
-    if ( myAverage_acc >.25 && myAverage_acc< .4)
-    {
-      moveBack = false;
-      moveLeft =false;
-      moveFront = true;
-      moveRight = false;
-    } 
-     else if ( myAverage_acc > -0.1 && myAverage_acc<.1)
-    {
-      moveBack = true;
-      moveLeft =false;
-      moveFront = false;
-      moveRight = false;
-    }
-    else if ((myAverage_R >= (upperThreshold_R - lowerThreshold_R)*0.65)&& abs(myAverage_R-myAverage_L) > 10 )
-    {
-      moveRight = true;
-      moveLeft = false;
-      moveBack = false;
-      moveFront = false;
-    } else if ((myAverage_L >= (upperThreshold_L - lowerThreshold_L)*0.55) && abs(myAverage_R-myAverage_L) > 2 )
-    {
-      moveLeft = true;
-      moveRight = false;
-      moveBack = false;
-      moveFront = false;
-    }
+    //if ( myAverage_acc >.25 && myAverage_acc< .4)
+    //{
+    //  moveBack = false;
+    //  moveLeft =false;
+    //  moveFront = true;
+    //  moveRight = false;
+    //} 
+    // else if ( myAverage_acc > -0.1 && myAverage_acc<.1)
+    //{
+    //  moveBack = true;
+    //  moveLeft =false;
+    //  moveFront = false;
+    //  moveRight = false;
+    //}
+    //else if ((myAverage_R >= (upperThreshold_R - lowerThreshold_R)*0.65)&& abs(myAverage_R-myAverage_L) > 10 )
+    //{
+    //  moveRight = true;
+    //  moveLeft = false;
+    //  moveBack = false;
+    //  moveFront = false;
+    //} else if ((myAverage_L >= (upperThreshold_L - lowerThreshold_L)*0.55) && abs(myAverage_R-myAverage_L) > 2 )
+    //{
+    //  moveLeft = true;
+    //  moveRight = false;
+    //  moveBack = false;
+    //  moveFront = false;
+    //}
         
 
     //MAKE TGE MOVE
@@ -316,35 +398,6 @@ class EEG_Processing_User {
     }
 
     ellipse(3*(width/4)+x_move, (height/4)+y_move, 10, 10);
-
-
-
-    //DM: simulate keystroke
-    if (moveRight == true)
-    {
-      robot.keyPress(KeyEvent.VK_RIGHT);
-    } else {
-      robot.keyRelease(KeyEvent.VK_RIGHT);
-    }
-
-    if (moveLeft == true) {
-      robot.keyPress(KeyEvent.VK_LEFT);
-    } else {
-      robot.keyRelease(KeyEvent.VK_LEFT);
-    }
-    
-    if (moveFront == true) {
-      robot.keyPress(KeyEvent.VK_UP);
-    } else {
-      robot.keyRelease(KeyEvent.VK_UP);
-    }
-    
-    if (moveBack == true) {
-      robot.keyPress(KeyEvent.VK_DOWN);
-    } else {
-      robot.keyRelease(KeyEvent.VK_DOWN);
-    }
-    
     
     popStyle();
   }

@@ -23,6 +23,10 @@ import java.awt.event.KeyEvent;
 Robot robot;
 
 boolean isFocused;
+boolean moveRight = false;
+boolean moveLeft = false;
+boolean moveFront = false;
+boolean moveBack = false;
 
 // end DM
 
@@ -121,9 +125,9 @@ EEG_Processing eegProcessing;
 EEG_Processing_User eegProcessing_user;
 
 // Serial output
-String serial_output_portName = "/dev/tty.usbmodem1411";  //must edit this based on the name of the serial/COM port
+String serial_output_portName = "/dev/cu.usbmodem1411";  //must edit this based on the name of the serial/COM port
 Serial serial_output;
-int serial_output_baud = 115200; //baud rate from the Arduino
+int serial_output_baud = 9600; //baud rate from the Arduino
 
 //fft constants
 int Nfft = 256; //set resolution of the FFT.  Use N=256 for normal, N=512 for MU waves
