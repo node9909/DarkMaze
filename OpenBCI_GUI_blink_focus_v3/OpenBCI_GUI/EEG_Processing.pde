@@ -194,7 +194,13 @@ class EEG_Processing_User {
       moveBack = false;
       moveFront = false;
     }
-
+    else
+    {
+       moveLeft = false;
+      moveRight = false;
+      moveBack = false;
+      moveFront = false;
+    }
 
 
     //scarlettsan
@@ -241,40 +247,67 @@ class EEG_Processing_User {
     ////DM: simulate keystroke
     //if (isFocused == true)
     //{
-    // robot.keyPress(KeyEvent.VK_SPACE);
+    //robot.keyPress(KeyEvent.VK_SPACE);
     //} else {
-    // robot.keyRelease(KeyEvent.VK_SPACE);
+    //robot.keyRelease(KeyEvent.VK_SPACE);
     //}
     
     //if (moveRight == true)
     //{
-    // robot.keyPress(KeyEvent.VK_RIGHT);
+    //robot.keyPress(KeyEvent.VK_RIGHT);
     //} else {
-    // robot.keyRelease(KeyEvent.VK_RIGHT);
+    //robot.keyRelease(KeyEvent.VK_RIGHT);
     //}
 
     //if (moveLeft == true) {
-    // robot.keyPress(KeyEvent.VK_LEFT);
+    //robot.keyPress(KeyEvent.VK_LEFT);
     //} else {
-    // robot.keyRelease(KeyEvent.VK_LEFT);
+    //robot.keyRelease(KeyEvent.VK_LEFT);
     //}
     
     //if (moveFront == true) {
-    // robot.keyPress(KeyEvent.VK_UP);
+    //robot.keyPress(KeyEvent.VK_UP);
     //} else {
-    // robot.keyRelease(KeyEvent.VK_UP);
+    //robot.keyRelease(KeyEvent.VK_UP);
     //}
     
     //if (moveBack == true) {
-    // robot.keyPress(KeyEvent.VK_DOWN);
+    //robot.keyPress(KeyEvent.VK_DOWN);
     //} else {
-    // robot.keyRelease(KeyEvent.VK_DOWN);
+    //robot.keyRelease(KeyEvent.VK_DOWN);
     //}
     
     
-    
+    //DM serial write
     // try writing to the serial port if exist
     try {
+      //// simulate data
+      //isFocused = true;
+      
+      //if ((frameCount / 60) % 4 == 0) {
+      //moveFront = true;
+      //moveBack = false;
+      //moveLeft = false;
+      //moveRight = false;
+      //}
+      //else if ((frameCount / 60) % 4 == 1) {
+      //moveFront = false;
+      //moveBack = true;
+      //moveLeft = false;
+      //moveRight = false;
+      //}
+      //else if ((frameCount / 60) % 4 == 2) {
+      //moveFront = false;
+      //moveBack = false;
+      //moveLeft = true;
+      //moveRight = false;
+      //}
+      //else if ((frameCount / 60) % 4 == 3) {
+      //moveFront = false;
+      //moveBack = false;
+      //moveLeft = false;
+      //moveRight = true;
+      //}
       println("Focus: ", isFocused, " up: ", moveFront, " down: ", moveBack, " left: ", moveLeft, " right: ", moveRight);
       serial_output.write(int(isFocused) + 48);
       serial_output.write(int(moveFront) + 48);
@@ -282,12 +315,8 @@ class EEG_Processing_User {
       serial_output.write(int(moveLeft) + 48);
       serial_output.write(int(moveRight) + 48);
       serial_output.write('\n');
-      //serial_output.write('1');
-      //serial_output.write('1');
-      //serial_output.write('1');
-      //serial_output.write('1');
-      //serial_output.write('1');
-      //serial_output.write('\n');
+      println(int(isFocused) + 48, int(moveFront) + 48, int(moveBack) + 48, int(moveLeft) + 48, int(moveRight) + 48, int('\n'));
+
     }
     catch(RuntimeException e) {
       if (isVerbose) println("serial not present");
