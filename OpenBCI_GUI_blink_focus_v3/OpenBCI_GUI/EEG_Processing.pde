@@ -125,32 +125,7 @@ class EEG_Processing_User {
     //trip the output to a value between 0-255
     if (output < 0) output = 0;
     if (output > 255) output = 255;
-
-    ////attempt to write to serial_output. If this serial port does not exist, do nothing.
-    //try {
-    //  //println("inMoov_output: | " + output + " |");
-    //  serial_output.write(output);
-    //}
-    //catch(RuntimeException e) {
-    //  if (isVerbose) println("serial not present");
-    //}
-
-    ////OR, you could loop over each EEG channel and do some sort of frequency-domain processing from the FFT data
-    //float FFT_freq_Hz, FFT_value_uV;
-    //for (int Ichan=0;Ichan < nchan; Ichan++) {
-    //  //loop over each new sample
-    //  for (int Ibin=0; Ibin < fftBuff[Ichan].specSize(); Ibin++){
-    //    FFT_freq_Hz = fftData[Ichan].indexToFreq(Ibin);
-    //    FFT_value_uV = fftData[Ichan].getBand(Ibin);
-
-    //    //add your processing here...
-
-
-
-    //    //println("EEG_Processing_User: Ichan = " + Ichan + ", Freq = " + FFT_freq_Hz + "Hz, FFT Value = " + FFT_value_uV + "uV/bin");
-    //  }
-    //}  
-
+ 
     //DM Include acceleration
     int  Achan =2;
     myAverage_acc = 0;
@@ -281,6 +256,7 @@ class EEG_Processing_User {
     //DM serial write
     // try writing to the serial port if exist
     try {
+      sendData();
       //// simulate data
       //isFocused = true;
       
@@ -308,23 +284,29 @@ class EEG_Processing_User {
       //moveLeft = false;
       //moveRight = true;
       //}
-      println("Focus: ", isFocused, " up: ", moveFront, " down: ", moveBack, " left: ", moveLeft, " right: ", moveRight);
-      serial_output.write(int(isFocused) + 48);
-      serial_output.write(int(moveFront) + 48);
-      serial_output.write(int(moveBack) + 48);
-      serial_output.write(int(moveLeft) + 48);
-      serial_output.write(int(moveRight) + 48);
-      serial_output.write('\n');
-      println(int(isFocused) + 48, int(moveFront) + 48, int(moveBack) + 48, int(moveLeft) + 48, int(moveRight) + 48, int('\n'));
+      //println("Focus: ", isFocused, " up: ", moveFront, " down: ", moveBack, " left: ", moveLeft, " right: ", moveRight);
+
 
     }
     catch(RuntimeException e) {
       if (isVerbose) println("serial not present");
     }
+    
+   
 
     //end focus
   }
 
+  void sendData()
+  {
+      serial_output_DM.write(int(isFocused) + 48);
+      serial_output_DM.write(int(moveFront) + 48);
+      serial_output_DM.write(int(moveBack) + 48);
+      serial_output_DM.write(int(moveLeft) + 48);
+      serial_output_DM.write(int(moveRight) + 48);
+      serial_output_DM.write('\n');
+      println(int(isFocused) + 48, int(moveFront) + 48, int(moveBack) + 48, int(moveLeft) + 48, int(moveRight) + 48, int('\n'));
+  }
   //Draw function added to render EMG feedback visualizer
   public void draw() {
     pushStyle();

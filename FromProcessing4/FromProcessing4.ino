@@ -30,18 +30,20 @@ boolean leftright = false;
 
 void setup() {
   // initialize serial:
-  Serial.begin(115200);
+  Serial.begin(9600);
   for (int i = 2; i < 7; i++) {
     pinMode(i, OUTPUT);
   }
   // reserve 200 bytes for the inputString:
-  inputString.reserve(20);
+  //inputString.reserve(20);
 
   servoMotor1.attach(servoPin1);
   servoMotor2.attach(servoPin2);
   
   servoMotor1.write(90);
+  delay(200);
   servoMotor2.write(90);
+  delay(200);
 }
 
 void loop() {
@@ -65,32 +67,29 @@ void loop() {
     // motor up-down pairs
     if (inputString[1] == '1' && inputString[2] == '0' && inputString[3] == '0' && inputString[4] == '0') {
       servoMotor1.write(20);
-      delay(15);
+      delay(50);
     }
     else if (inputString[2] == '1' && inputString[1] == '0' && inputString[3] == '0' && inputString[4] == '0') {
       servoMotor1.write(160);
-      delay(15);
+      delay(50);
     }
 
     // motor left-right pairs
     else if (inputString[3] == '1' && inputString[2] == '0' && inputString[1] == '0' && inputString[4] == '0') {
       servoMotor2.write(20);
-      delay(15);
+      delay(50);
     }
     else if (inputString[4] == '1' && inputString[2] == '0' && inputString[3] == '0' && inputString[1] == '0') {
       servoMotor2.write(160);
-      delay(15);
+      delay(50);
     }
     else {
-      servoMotor1.write(90);
-      delay(15); 
-      servoMotor2.write(90);
-      delay(15); 
+       
     }
 
     //Serial.println(inputString);
     //clear the string:
-    delay(15);
+    
     inputString = "";
     stringComplete = false;
   }
@@ -103,9 +102,10 @@ void loop() {
  response.  Multiple bytes of data may be available.
  */
 void serialEvent() {
-  while (Serial.available()) {
+  if(Serial.available()>0) {
     // get the new byte:
-    
+    //Serial.println("getting data");
+     //Serial.println(inputString);
     char inChar = (char)Serial.read();
     // add it to the inputString:
     inputString += inChar;

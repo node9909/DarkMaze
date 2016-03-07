@@ -129,9 +129,12 @@ EEG_Processing eegProcessing;
 EEG_Processing_User eegProcessing_user;
 
 // Serial output
-String serial_output_portName = "/dev/cu.usbmodem1451";  //must edit this based on the name of the serial/COM port
-Serial serial_output;
-int serial_output_baud = 115200; //baud rate from the Arduino
+//String serial_output_portName = "skip";  //must edit this based on the name of the serial/COM port
+String serial_output_portName_DM = "COM4";  //must edit this based on the name of the serial/COM port
+//Serial serial_output;
+Serial serial_output_DM;
+//int serial_output_baud = 9600; //baud rate from the Arduino
+int serial_output_baud_DM = 9600; //baud rate from the Arduino
 
 //fft constants
 int Nfft = 256; //set resolution of the FFT.  Use N=256 for normal, N=512 for MU waves
@@ -269,12 +272,14 @@ void setup() {
 
   //attempt to open a serial port for "output"
   try {
-    verbosePrint("OpenBCI_GUI.pde:  attempting to open serial port for data output = " + serial_output_portName);
-    serial_output = new Serial(this, serial_output_portName, serial_output_baud); //open the com port
-    serial_output.clear(); // clear anything in the com port's buffer
+    verbosePrint("OpenBCI_GUI.pde:  attempting to open serial port for data output = " + serial_output_portName_DM);
+    //serial_output = new Serial(this, serial_output_portName, serial_output_baud); //open the com port
+    serial_output_DM = new Serial(this, serial_output_portName_DM, serial_output_baud_DM); //open the com port
+    serial_output_DM.clear(); // clear anything in the com port's buffer
+    //serial_output.clear(); // clear anything in the com port's buffer
   } 
   catch (RuntimeException e) {
-    verbosePrint("OpenBCI_GUI.pde: *** ERROR ***: Could not open " + serial_output_portName);
+    verbosePrint("OpenBCI_GUI.pde: *** ERROR ***: Could not open " + serial_output_portName_DM);
   }
 }
 //====================== END--OF ==========================//
